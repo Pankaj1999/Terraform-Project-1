@@ -2,8 +2,7 @@
 trigger:
   - main
 
-variables:
-  - group: terraform-secrets
+
 
 stages:
 - stage: Validate
