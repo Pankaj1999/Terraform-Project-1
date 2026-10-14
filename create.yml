@@ -1,12 +1,6 @@
 # azure-pipelines.yml
 trigger:
-  branches:
-    include:
-    - main
-    - feature/*
-  paths:
-    include:
-    - terraform/*
+  - main
 
 variables:
   - group: terraform-secrets
