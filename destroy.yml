@@ -16,6 +16,17 @@ stages:
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '1.9.0'
+
+    - task: TerraformTaskV4@4
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        backendServiceArm: 'Az Terraform Service Connection'
+        backendAzureRmResourceGroupName: 'terraform-state-rg'
+        backendAzureRmStorageAccountName: 'tfdevbackend2026'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'dev.terraform.tfstate'    
     
     - task: TerraformTaskV4@4
       inputs:
