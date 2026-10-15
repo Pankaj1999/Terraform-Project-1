@@ -1,6 +1,6 @@
 rg_name = "rg"
 location = "eastus"
 service_principal_name = "sp"
-key_vault_name = "mykv"
+key_vault_name = "mykv2026"
 SUB_ID = "6403028b-f0cb-4cf4-af95-fc898a7de50a"
 aks_cluster_name = "aks-cluster"

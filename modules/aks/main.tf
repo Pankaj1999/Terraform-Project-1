@@ -13,8 +13,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   default_node_pool {
     name       = "defaultpool"
-    vm_size    = "Standard_DS2_v2"
-    zones   = [1, 2, 3]
+    vm_size    = "Standard_D2as_v4"
     auto_scaling_enabled = true
     max_count            = 3
     min_count            = 1
