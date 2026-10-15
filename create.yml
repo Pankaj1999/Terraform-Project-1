@@ -20,7 +20,7 @@ stages:
         provider: 'azurerm'
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
-        backendServiceArm: 'Azure for Students(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
+        backendServiceArm: 'Az Terraform Service Connection'
         backendAzureRmResourceGroupName: 'terraform-state-rg'
         backendAzureRmStorageAccountName: 'tfdevbackend2026'
         backendAzureRmContainerName: 'tfstate'
@@ -37,7 +37,7 @@ stages:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
-        environmentServiceNameAzureRM: 'Azure for Students(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
+        environmentServiceNameAzureRM: 'Az Terraform Service Connection'
 
 
           
