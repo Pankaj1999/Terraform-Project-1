@@ -19,7 +19,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform-Project-1/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
         backendServiceArm: 'Azure for Students(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
         backendAzureRmResourceGroupName: 'terraform-state-rg'
         backendAzureRmStorageAccountName: 'tfdevbackend2026'
@@ -30,7 +30,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform-Project-1/dev'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
 
 - stage: Dev_Deploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
@@ -51,6 +51,6 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'apply'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform-Project-1/dev'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
               environmentServiceNameAzureRM: 'Azure for Students(1)(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
 
