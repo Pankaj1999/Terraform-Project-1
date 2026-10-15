@@ -17,6 +17,47 @@ The root configuration in `dev/` provisions:
 
 Terraform state and outputs can contain credentials and private key material. Protect access to the remote state, pipeline logs, generated kubeconfig, and any saved plan files. Never commit secrets or publish them in logs.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    Dev["Developer pushes changes"] -->|main branch| Pipeline["Azure DevOps pipeline"]
+    Pipeline --> Install["Install Terraform 1.9.0<br/>init, validate, apply"]
+    Install -->|Azure service connection| TF["Terraform configuration<br/>dev/"]
+    TF <-->|Remote state| State["Azure Blob Storage<br/>Terraform state"]
+
+    subgraph Tenant["Microsoft Entra tenant"]
+        App["Application registration"]
+        SP["Service principal<br/>and generated credential"]
+        App --> SP
+    end
+
+    subgraph Subscription["Azure subscription"]
+        RG["Resource group"]
+        Role["Contributor role assignment<br/>to generated service principal"]
+        Scope["Subscription scope"]
+        KV["Azure Key Vault"]
+        AKS["Azure Kubernetes Service"]
+        RG --> KV
+        RG --> AKS
+        SP --> Role
+        Role -.-> Scope
+    end
+
+    TF --> App
+    TF --> RG
+    TF --> KV
+    TF --> AKS
+    Pipeline -. "secret data access policy" .-> KV
+    TF --> Key["Generated SSH key pair"]
+    Key -->|"public key"| AKS
+    Key -->|"private key secret"| KV
+    SP -->|"client credential secret"| KV
+    AKS -->|"kubeconfig"| AgentFile["Pipeline agent<br/>dev/kubeconfig.yaml"]
+```
+
+The pipeline identity authenticates Terraform through the Azure service connection. It is distinct from the generated service principal, which receives the subscription role assignment and is configured on AKS. The SSH private key, generated service-principal credential, Terraform state, and kubeconfig are sensitive; secure their storage and pipeline access.
+
 ## Prerequisites
 
 - An Azure subscription and Microsoft Entra tenant.
