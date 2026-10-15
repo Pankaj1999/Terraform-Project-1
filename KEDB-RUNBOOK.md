@@ -117,6 +117,29 @@ The identity running Terraform can reach the vault but lacks secret data-plane p
 5. If the vault uses Azure RBAC instead of access policies, configure an appropriate vault-scoped data role (for example, **Key Vault Secrets Officer**) for the Terraform identity instead. Do not mix permission models without confirming the vault configuration.
 6. Retry the plan/apply. If the error persists, verify the task's service connection is the same identity named in the policy and that the vault's networking/firewall permits the agent.
 
+## Error: Key Vault secret purge returns 403
+
+**Typical message**
+
+`does not have secrets purge permission on key vault`
+
+**Cause**
+
+The AzureRM provider purges soft-deleted secrets when a `azurerm_key_vault_secret` resource is destroyed by default. The vault-level `purge_soft_delete_on_destroy` setting controls purging the vault itself; it does not control secret resources.
+
+**Resolution**
+
+1. In the AzureRM provider `features.key_vault` block, set:
+
+   ```hcl
+   purge_soft_deleted_secrets_on_destroy = false
+   ```
+
+   This repository sets this option in `dev/providers.tf`.
+2. Re-run `terraform plan` and review the secret changes before applying.
+3. Terraform will leave destroyed secrets soft-deleted instead of permanently purging them. They remain subject to the vault's soft-delete retention period and may be recoverable during that period.
+4. If a secret must be permanently purged, have an authorized vault administrator perform that action or grant the Terraform identity the required purge permission in accordance with organizational policy. Purging is irreversible.
+
 ## Error: AKS availability zone is unsupported
 
 **Typical message**
