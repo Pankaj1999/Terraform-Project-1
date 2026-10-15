@@ -5,9 +5,9 @@ trigger:
 
 
 stages:
-- stage: Validate
+- stage: Dev
   jobs:
-  - job: terraform_validate
+  - job: terraform_validate_and_apply
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -32,25 +32,13 @@ stages:
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
 
-- stage: Dev_Deploy
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  jobs:
-  - deployment: terraform_apply_dev
-    environment: dev
-    pool:
-      vmImage: 'ubuntu-latest'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: TerraformInstaller@0
-            inputs:
-              terraformVersion: '1.9.0'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        environmentServiceNameAzureRM: 'Azure for Students(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
+
+
           
-          - task: TerraformTaskV4@4
-            inputs:
-              provider: 'azurerm'
-              command: 'apply'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
-              environmentServiceNameAzureRM: 'Azure for Students(1)(6403028b-f0cb-4cf4-af95-fc898a7de50a)'
 
