@@ -1,8 +1,9 @@
 # azure-pipelines.yml
 trigger:
-  - main
-
-
+  - branch: main
+    include:
+      - dev/**
+      - modules/**
 
 stages:
 - stage: Dev
